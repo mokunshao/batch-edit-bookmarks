@@ -1,12 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Batch Edit Bookmarks</title>
-</head>
-<body>
-  test
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Batch Edit Bookmarks URL</title>
+    <link rel="stylesheet" href="./css/main.css" />
+  </head>
+  <body>
+    <div>
+      <input id="id-before" placeholder="Find" />
+      <input id="id-after" placeholder="Replace" />
+      <button id="id-show-preview">show preview</button>
+    </div>
+    <div>
+      Resutl:
+      <button id="id-select-all">select all</button>
+      <button id="id-deselect-all">deselect all</button>
+      <button id="id-start-replace">Start replace</button>
+      <div id="id-result-container"></div>
+    </div>
+    <script src="./js/main.js"></script>
+  </body>
 </html>
