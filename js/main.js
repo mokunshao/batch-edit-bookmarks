@@ -8,6 +8,7 @@ var deselectAllButton = document.getElementById('id-deselect-all');
 var startReplaceButton = document.getElementById('id-start-replace');
 
 var cacheResult = [];
+var willChangeMap = {};
 
 function search() {
   var beforeValue = before.value;
@@ -23,12 +24,24 @@ function search() {
 
 showPreviewButton.onclick = search;
 
+function highlight(url, word) {
+  if (!word) {
+    return url;
+  }
+  var arr = url.split(word);
+  var j = `<span class="highlight">${word}</span>`;
+  var r = arr.join(j);
+  return r;
+}
+
 function templateCell(obj, beforeValue, afterValue) {
+  var afterURL = obj.url.replace(new RegExp(beforeValue, 'gm'), afterValue);
+  willChangeMap[obj.id] = afterURL;
   return `<div>
     <input type="checkbox" name="id" value="${obj.id}" /> 
     <div>title: ${obj.title}</div>
-    <div>before url: ${obj.url}</div>
-    <div>after url: ${obj.url.replace(beforeValue, afterValue)}</div>
+    <div>before url: ${highlight(obj.url, beforeValue)}</div>
+    <div>after url: ${highlight(afterURL, afterValue)}</div>
   </div>`;
 }
 
@@ -58,17 +71,20 @@ deselectAllButton.onclick = function () {
 };
 
 function getChecked() {
-  var r = [];
-  document
-    .querySelectorAll('input[type=checkbox][name=id]')
-    .forEach(function (item) {
-      if (item.checked === true) {
-        r.push(item);
-      }
-    });
-  return r;
+  return document.querySelectorAll('input[type="checkbox"]:checked');
 }
 
 startReplaceButton.onclick = function () {
-  console.log(getChecked());
+  var checked = getChecked();
+  if (!checked.length) {
+    alert('please select at least one');
+  } else if (confirm('confirm replace?')) {
+    var checkedId = Array.prototype.map.call(checked, function (item) {
+      return item.value;
+    });
+    checkedId.forEach(function (id) {
+      chrome.bookmarks.update(id, { url: willChangeMap[id] });
+    });
+    alert('success!');
+  }
 };
