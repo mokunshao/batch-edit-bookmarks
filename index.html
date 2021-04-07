@@ -11,12 +11,18 @@
   <body>
     <h3>Batch Edit Bookmarks URL</h3>
     <div>
-      <input id="id-before" placeholder="Find" />
-      <input id="id-after" placeholder="Replace" />
+      <input id="id-before" placeholder="Find in URL" />
+      <input id="id-after" placeholder="Replace with" />
       <button id="id-show-preview">show preview</button>
     </div>
     <div>
-      <div style="padding-bottom: 10px">
+      <div>
+        <span id="id-found-num">0</span>
+        found.
+        <span id="id-selected-num">0</span>
+        selected.
+      </div>
+      <div id="actions">
         <button id="id-select-all">select all</button>
         <button id="id-deselect-all">deselect all</button>
         <button id="id-start-replace" style="background-color: black">

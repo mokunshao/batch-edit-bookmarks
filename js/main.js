@@ -2,14 +2,17 @@ var before = document.getElementById('id-before');
 var after = document.getElementById('id-after');
 var resultContainer = document.getElementById('id-result-container');
 var showPreviewButton = document.getElementById('id-show-preview');
-
+var actions = document.getElementById('actions');
 var selectAllButton = document.getElementById('id-select-all');
 var deselectAllButton = document.getElementById('id-deselect-all');
 var startReplaceButton = document.getElementById('id-start-replace');
+var foundNum = document.getElementById('id-found-num');
+var selectedNum = document.getElementById('id-selected-num');
 
 var willChangeMap = {};
 
 function search() {
+  willChangeMap = {};
   var beforeValue = before.value;
   var afterValue = after.value;
   if (beforeValue) {
@@ -17,8 +20,12 @@ function search() {
       var result = res.filter(function (item) {
         return item.url.includes(beforeValue);
       });
+      foundNum.innerText = result.length;
+      selectedNum.innerText = 0;
       renderResult(result, beforeValue, afterValue);
     });
+  } else {
+    alert('please input something in the first input');
   }
 }
 
@@ -62,6 +69,7 @@ function selectOrDeselectAllCheckbox(bool) {
     .forEach(function (item) {
       item.checked = bool;
     });
+  selectedNum.innerText = getChecked().length;
 }
 
 selectAllButton.onclick = function () {
@@ -79,8 +87,8 @@ function getChecked() {
 startReplaceButton.onclick = function () {
   var checked = getChecked();
   if (!checked.length) {
-    alert('please select at least one');
-  } else if (confirm('are you sure?')) {
+    alert('please select at least one item');
+  } else if (confirm("are you sure? This action can't be undone.")) {
     var checkedId = Array.prototype.map.call(checked, function (item) {
       return item.value;
     });
@@ -88,5 +96,11 @@ startReplaceButton.onclick = function () {
       chrome.bookmarks.update(id, { url: willChangeMap[id] });
     });
     alert('success!');
+  }
+};
+
+resultContainer.onclick = function (e) {
+  if (e.target.nodeName === 'INPUT') {
+    selectedNum.innerText = getChecked().length;
   }
 };
