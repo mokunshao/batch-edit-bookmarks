@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "Batch Edit Bookmarks",
+  "name": "Batch Edit Bookmarks URL",
   "version": "0.0.1",
-  "description": "Batch Edit Bookmarks",
+  "description": "Batch Edit Bookmarks URL",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",

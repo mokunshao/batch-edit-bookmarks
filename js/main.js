@@ -7,17 +7,17 @@ var selectAllButton = document.getElementById('id-select-all');
 var deselectAllButton = document.getElementById('id-deselect-all');
 var startReplaceButton = document.getElementById('id-start-replace');
 
-var cacheResult = [];
 var willChangeMap = {};
 
 function search() {
   var beforeValue = before.value;
+  var afterValue = after.value;
   if (beforeValue) {
     chrome.bookmarks.search(beforeValue, function (res) {
-      cacheResult = res.filter(function (item) {
+      var result = res.filter(function (item) {
         return item.url.includes(beforeValue);
       });
-      renderResult(cacheResult);
+      renderResult(result, beforeValue, afterValue);
     });
   }
 }
@@ -37,17 +37,19 @@ function highlight(url, word) {
 function templateCell(obj, beforeValue, afterValue) {
   var afterURL = obj.url.replace(new RegExp(beforeValue, 'gm'), afterValue);
   willChangeMap[obj.id] = afterURL;
-  return `<div>
-    <input type="checkbox" name="id" value="${obj.id}" /> 
-    <div>title: ${obj.title}</div>
-    <div>before url: ${highlight(obj.url, beforeValue)}</div>
-    <div>after url: ${highlight(afterURL, afterValue)}</div>
-  </div>`;
+  return `<tr>
+    <td>
+      <input type="checkbox" name="id" value="${obj.id}" />
+    </td>
+    <td>
+      <div><b>title</b>: ${obj.title}</div>
+      <div><b>before</b>: ${highlight(obj.url, beforeValue)}</div>
+      <div><b>after</b>: ${highlight(afterURL, afterValue)}</div>
+    </td>
+  </tr>`;
 }
 
-function renderResult(res) {
-  var beforeValue = before.value;
-  var afterValue = after.value;
+function renderResult(res, beforeValue, afterValue) {
   var html = res.reduce(function (pre, cur) {
     return pre + templateCell(cur, beforeValue, afterValue);
   }, '');
@@ -78,7 +80,7 @@ startReplaceButton.onclick = function () {
   var checked = getChecked();
   if (!checked.length) {
     alert('please select at least one');
-  } else if (confirm('confirm replace?')) {
+  } else if (confirm('are you sure?')) {
     var checkedId = Array.prototype.map.call(checked, function (item) {
       return item.value;
     });
